@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification API Demo - Light Mode</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #eef2ff;
+
+            color: #1f2937;
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <div
+        class="bg-white p-10 rounded-3xl shadow-2xl max-w-sm w-full text-center border-t-4 border-teal-500 transition-all duration-300">
+
+        <h1 class="text-3xl font-extrabold mb-2 text-teal-600">☀️ Clicker Challenge</h1>
+        <p class="text-gray-600 mb-6">Test simple browser notifications in style.</p>
+
+
+        <p id="statusMessage" class="mt-4 mb-6 text-sm font-semibold text-gray-500"></p>
+
+
+        <button id="enableBtn" onclick="requestPermission()"
+            class="w-full mb-4 px-6 py-3 bg-teal-500 text-white font-bold rounded-xl shadow-lg hover:bg-teal-600 transition duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 focus:ring-offset-white">
+            Enable Notifications
+        </button>
+
+
+        <button id="sendBtn" onclick="sendNotification()" disabled
+            class="w-full px-6 py-3 bg-amber-500 text-white font-bold rounded-xl shadow-lg hover:bg-amber-600 transition duration-200 ease-in-out disabled:bg-gray-300 disabled:cursor-not-allowed transform hover:scale-[1.02] focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-white">
+            Send Notification
+        </button>
+    </div>
+
+    <script>
+        const enableBtn = document.getElementById('enableBtn');
+        const sendBtn = document.getElementById('sendBtn');
+        const statusMsg = document.getElementById('statusMessage');
+
+
+        function updateUI() {
+            const p = Notification.permission;
+            statusMsg.textContent = `Status: ${p.toUpperCase()}`;
+
+            statusMsg.className = `mt-4 mb-6 text-sm font-semibold ${p === 'granted' ? 'text-green-600' :
+                p === 'denied' ? 'text-red-600' :
+                    'text-blue-600'
+                }`;
+
+            enableBtn.disabled = (p !== 'default');
+            enableBtn.textContent = (p === 'granted') ? 'Notifications Granted' : 'Enable Notifications';
+            sendBtn.disabled = (p !== 'granted');
+        }
+
+
+        async function requestPermission() {
+            if (!("Notification" in window)) {
+                console.error("Notifications not supported.");
+                return;
+            }
+
+            await Notification.requestPermission();
+            updateUI();
+        }
+
+        function sendNotification() {
+            if (Notification.permission === 'granted') {
+
+                new Notification('👋 Hi Ayush!');
+                console.log('Notification sent successfully!');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', updateUI);
+    </script>
+
+</body>
+
+</html>
